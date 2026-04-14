@@ -5,21 +5,24 @@ import Layout from '../components/Layout';
 
 export default function Upload() {
   const navigate = useNavigate();
-  const [tab, setTab] = useState('file'); // 'file' | 'manual'
+  const [tab, setTab] = useState('file');
   const [cocId, setCocId] = useState('');
   const [file, setFile] = useState(null);
   const [projectName, setProjectName] = useState('');
-  const [reportEmail, setReportEmail] = useState('');
+  const [reportName, setReportName] = useState('');
+  const [submittedBy, setSubmittedBy] = useState('');
   const [notes, setNotes] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [conflictId, setConflictId] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const handleFileUpload = async (e) => {
     e.preventDefault();
     if (!cocId) return setError('COC ID is required.');
     if (!file) return setError('Please select an Excel file.');
-    setError(''); setMessage(''); setLoading(true);
+    setError(''); setMessage(''); setConflictId(null); setLoading(true);
 
     const formData = new FormData();
     formData.append('file', file);
@@ -33,6 +36,7 @@ export default function Upload() {
       setTimeout(() => navigate(`/coc/${cocId}`), 1500);
     } catch (err) {
       setError(err.response?.data?.message || 'Upload failed.');
+      if (err.response?.status === 409) setConflictId(cocId);
     } finally {
       setLoading(false);
     }
@@ -41,16 +45,38 @@ export default function Upload() {
   const handleManualCreate = async (e) => {
     e.preventDefault();
     if (!cocId) return setError('COC ID is required.');
-    setError(''); setMessage(''); setLoading(true);
+    setError(''); setMessage(''); setConflictId(null); setLoading(true);
 
     try {
-      await api.post('/coc', { coc_id: cocId, project_name: projectName, report_email: reportEmail, notes });
+      await api.post('/coc', {
+        coc_id: cocId,
+        project_name: projectName || null,
+        report_name: reportName || null,
+        submitted_by: submittedBy || null,
+        notes: notes || null,
+      });
       setMessage('COC created successfully.');
       setTimeout(() => navigate(`/coc/${cocId}`), 1500);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create COC.');
+      if (err.response?.status === 409) setConflictId(cocId);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteConflict = async () => {
+    if (!confirm(`Delete COC ${conflictId} and all its data? This cannot be undone.`)) return;
+    setDeleting(true);
+    try {
+      await api.delete(`/coc/${conflictId}`);
+      setConflictId(null);
+      setError('');
+      setMessage(`COC ${conflictId} deleted. You can now re-upload.`);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to delete COC.');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -70,7 +96,16 @@ export default function Upload() {
       </div>
 
       {message && <div className="alert alert-success">{message}</div>}
-      {error && <div className="alert alert-error">{error}</div>}
+      {error && (
+        <div className="alert alert-error" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+          <span>{error}</span>
+          {conflictId && (
+            <button className="btn btn-danger btn-sm" onClick={handleDeleteConflict} disabled={deleting}>
+              {deleting ? 'Deleting...' : `Delete ${conflictId}`}
+            </button>
+          )}
+        </div>
+      )}
 
       {tab === 'file' && (
         <div className="card">
@@ -105,12 +140,16 @@ export default function Upload() {
               <input value={projectName} onChange={e => setProjectName(e.target.value)} />
             </div>
             <div className="form-group">
-              <label>Report Email</label>
-              <input type="email" value={reportEmail} onChange={e => setReportEmail(e.target.value)} />
+              <label>Report Name</label>
+              <input value={reportName} onChange={e => setReportName(e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Submitted By</label>
+              <input value={submittedBy} onChange={e => setSubmittedBy(e.target.value)} />
             </div>
             <div className="form-group">
               <label>Notes</label>
-              <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} />
+              <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} placeholder="Optional" />
             </div>
             <button type="submit" className="btn btn-primary" disabled={loading}>
               {loading ? 'Creating...' : 'Create COC'}

@@ -4,11 +4,11 @@ const pool = require('../db/db');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 
 const TEST_TABLES = {
-  icp: { table: 'icp', id: 'icp_id', fields: ['ll_tm', 'll_dm', 'ba_tm', 'ba_dm', 'mg_tm'] },
+  icp: { table: 'icp', id: 'icp_id', fields: ['mg_tm', 'ca_tm', 'fe_tm', 'si_tm', 'mn_tm'] },
   alkalinity: { table: 'alkalinity', id: 'alkalinity_id', fields: ['p_alk_ppm', 't_alk_ppm', 'hydroxide_ppm', 'carbonate_ppm', 'bicarb_ppm'] },
   ph_conductivity: { table: 'ph_conductivity', id: 'ph_cond_id', fields: ['ph', 'temperature', 'conductivity'] },
-  tictoc: { table: 'tictoc', id: 'tictoc_id', fields: ['tic_final_result', 'tic_as_caco3', 'toc_final_result', 'toc_as_caco3'] },
-  ic: { table: 'ic', id: 'ic_id', fields: ['f_ppm', 'cl_ppm', 'no2_ppm', 'br_ppm', 'no3_ppm'] },
+  tictoc: { table: 'tictoc', id: 'tictoc_id', fields: ['tic_result_ppm', 'tic_final_result_ppm', 'tic_as_caco3', 'toc_result_ppm', 'toc_final_result_ppm', 'toc_as_caco3'] },
+  ic: { table: 'ic', id: 'ic_id', fields: ['f_ppm', 'cl_ppm', 'no2_ppm', 'br_ppm', 'no3_ppm', 'so4_ppm', 'po4_ppm'] },
 };
 
 // GET /api/results/:sampleId/:testType

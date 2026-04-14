@@ -14,7 +14,7 @@ export default function Layout({ children }) {
     <div className="layout">
       <header className="top-header">
         <div className="top-header-left">
-          <img src="/aris-logo.png" alt="SAIT ARIS" className="header-logo" onError={(e) => { e.target.style.display = 'none'; }} />
+          <img src="/sait-aris-logo.png" alt="SAIT ARIS" className="header-logo" />
           <div className="header-title">
             <span className="header-title-main">ARIS LIMS</span>
             <span className="header-title-sub">Laboratory Information Management System</span>
@@ -39,9 +39,6 @@ export default function Layout({ children }) {
           <NavLink to="/favourites" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
             Favourites
           </NavLink>
-          <NavLink to="/settings" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-            Settings
-          </NavLink>
           {isAdmin && <div className="nav-divider" />}
           {isAdmin && (
             <NavLink to="/upload" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
@@ -53,6 +50,12 @@ export default function Layout({ children }) {
               Manage Users
             </NavLink>
           )}
+          {isAdmin && (
+            <NavLink to="/export" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+              Export
+            </NavLink>
+          )}
+
         </nav>
       </aside>
       <main className="main-content">{children}</main>

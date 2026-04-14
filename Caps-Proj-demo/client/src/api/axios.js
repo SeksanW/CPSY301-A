@@ -1,3 +1,6 @@
+//primary job: set up axios instance with base URL and auth token handling
+//attaches JWT token to every request
+
 import axios from 'axios';
 
 const api = axios.create({ baseURL: 'http://localhost:5000/api' });

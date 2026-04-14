@@ -10,13 +10,6 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleDevBypass = () => {
-    const devUser = { user_id: 1, username: 'admin', name: 'Administrator', role: 'admin' };
-    localStorage.setItem('user', JSON.stringify(devUser));
-    localStorage.setItem('token', 'dev-bypass-token');
-    window.location.href = '/dashboard';
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!username || !password) return setError('Username and password are required.');
@@ -36,8 +29,7 @@ export default function Login() {
     <div className="login-page">
       <div className="login-card">
         <div className="login-logo">
-          <img src="/sait-logo.png" alt="SAIT" onError={(e) => { e.target.style.display = 'none'; }} />
-          <h1>ARIS LIMS</h1>
+          <img src="/sait-aris-logo.png" alt="SAIT ARIS" style={{ width: '60px', marginBottom: '8px' }} />
           <p>Laboratory Information Management System</p>
         </div>
         <form onSubmit={handleSubmit} className="login-form">
@@ -64,11 +56,6 @@ export default function Login() {
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
-          <div className="dev-bypass">
-            <button type="button" className="btn btn-bypass" onClick={handleDevBypass}>
-              ⚡ Dev — Admin Bypass
-            </button>
-          </div>
         </form>
       </div>
     </div>

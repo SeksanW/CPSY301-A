@@ -43,15 +43,41 @@ CREATE TABLE IF NOT EXISTS samples (
   FOREIGN KEY (coc_id) REFERENCES coc_doc(coc_id) ON DELETE CASCADE
 );
 
--- ICP results
+-- ICP results total & Dissolved Metals
 CREATE TABLE IF NOT EXISTS icp (
   icp_id INT AUTO_INCREMENT PRIMARY KEY,
   sample_id VARCHAR(50) NOT NULL,
-  ll_tm FLOAT,
-  ll_dm FLOAT,
-  ba_tm FLOAT,
-  ba_dm FLOAT,
-  mg_tm FLOAT,
+  li_tm FLOAT, li_dm FLOAT,
+  be_tm FLOAT, be_dm FLOAT,
+  mg_tm FLOAT, mg_dm FLOAT,
+  al_tm FLOAT, al_dm FLOAT,
+  p_tm  FLOAT, p_dm  FLOAT,
+  ca_tm FLOAT, ca_dm FLOAT,
+  ti_tm FLOAT, ti_dm FLOAT,
+  v_tm  FLOAT, v_dm  FLOAT,
+  cr_tm FLOAT, cr_dm FLOAT,
+  mn_tm FLOAT, mn_dm FLOAT,
+  fe_tm FLOAT, fe_dm FLOAT,
+  co_tm FLOAT, co_dm FLOAT,
+  ni_tm FLOAT, ni_dm FLOAT,
+  cu_tm FLOAT, cu_dm FLOAT,
+  zn_tm FLOAT, zn_dm FLOAT,
+  as_tm FLOAT, as_dm FLOAT,
+  se_tm FLOAT, se_dm FLOAT,
+  sr_tm FLOAT, sr_dm FLOAT,
+  mo_tm FLOAT, mo_dm FLOAT,
+  cd_tm FLOAT, cd_dm FLOAT,
+  sb_tm FLOAT, sb_dm FLOAT,
+  ba_tm FLOAT, ba_dm FLOAT,
+  tl_tm FLOAT, tl_dm FLOAT,
+  pb_tm FLOAT, pb_dm FLOAT,
+  u_tm  FLOAT, u_dm  FLOAT,
+  ag_tm FLOAT, ag_dm FLOAT,
+  b_tm  FLOAT, b_dm  FLOAT,
+  na_tm FLOAT, na_dm FLOAT,
+  si_tm FLOAT, si_dm FLOAT,
+  s_tm  FLOAT, s_dm  FLOAT,
+  k_tm  FLOAT, k_dm  FLOAT,
   FOREIGN KEY (sample_id) REFERENCES samples(sample_id) ON DELETE CASCADE
 );
 
@@ -64,6 +90,9 @@ CREATE TABLE IF NOT EXISTS alkalinity (
   hydroxide_ppm FLOAT,
   carbonate_ppm FLOAT,
   bicarb_ppm FLOAT,
+  carb_as_co3_mgl FLOAT,
+  bicarb_as_hco3_mgl FLOAT,
+  hydroxide_as_oh_mgl FLOAT,
   FOREIGN KEY (sample_id) REFERENCES samples(sample_id) ON DELETE CASCADE
 );
 
@@ -81,9 +110,11 @@ CREATE TABLE IF NOT EXISTS ph_conductivity (
 CREATE TABLE IF NOT EXISTS tictoc (
   tictoc_id INT AUTO_INCREMENT PRIMARY KEY,
   sample_id VARCHAR(50) NOT NULL,
-  tic_final_result FLOAT,
+  tic_result_ppm FLOAT,
+  tic_final_result_ppm FLOAT,
   tic_as_caco3 FLOAT,
-  toc_final_result FLOAT,
+  toc_result_ppm FLOAT,
+  toc_final_result_ppm FLOAT,
   toc_as_caco3 FLOAT,
   FOREIGN KEY (sample_id) REFERENCES samples(sample_id) ON DELETE CASCADE
 );
@@ -92,12 +123,34 @@ CREATE TABLE IF NOT EXISTS tictoc (
 CREATE TABLE IF NOT EXISTS ic (
   ic_id INT AUTO_INCREMENT PRIMARY KEY,
   sample_id VARCHAR(50) NOT NULL,
-  f_ppm FLOAT,
-  cl_ppm FLOAT,
+  f_ppm   FLOAT,
+  cl_ppm  FLOAT,
   no2_ppm FLOAT,
-  br_ppm FLOAT,
+  br_ppm  FLOAT,
   no3_ppm FLOAT,
+  so4_ppm FLOAT,
+  po4_ppm FLOAT,
   FOREIGN KEY (sample_id) REFERENCES samples(sample_id) ON DELETE CASCADE
+);
+
+-- Custom test results (flexible test types)
+CREATE TABLE IF NOT EXISTS custom_tests (
+  custom_test_id INT AUTO_INCREMENT PRIMARY KEY,
+  sample_id VARCHAR(50) NOT NULL,
+  test_name VARCHAR(100) NOT NULL,
+  fields JSON NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (sample_id) REFERENCES samples(sample_id) ON DELETE CASCADE
+);
+
+-- Activity log table
+CREATE TABLE IF NOT EXISTS activity_log (
+  activity_id INT AUTO_INCREMENT PRIMARY KEY,
+  action VARCHAR(50) NOT NULL,
+  coc_id VARCHAR(50),
+  performed_by VARCHAR(150),
+  details TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Seed admin user (password: admin123)

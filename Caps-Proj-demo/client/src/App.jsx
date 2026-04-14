@@ -7,6 +7,7 @@ import COCDetail from './pages/COCDetail';
 import Upload from './pages/Upload';
 import AdminUsers from './pages/AdminUsers';
 import Favourites from './pages/Favourites';
+import Export from './pages/Export';
 import './index.css';
 
 function ProtectedRoute({ children, adminOnly = false }) {
@@ -29,6 +30,7 @@ function AppRoutes() {
       <Route path="/upload" element={<ProtectedRoute adminOnly><Upload /></ProtectedRoute>} />
       <Route path="/admin/users" element={<ProtectedRoute adminOnly><AdminUsers /></ProtectedRoute>} />
       <Route path="/favourites" element={<ProtectedRoute><Favourites /></ProtectedRoute>} />
+      <Route path="/export" element={<ProtectedRoute adminOnly><Export /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to={user ? '/dashboard' : '/login'} replace />} />
     </Routes>
   );

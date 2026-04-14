@@ -1,3 +1,6 @@
+// Functions only accessible to the admin. 
+// Admin can view all users, register new users.
+// Lock/unlock accounts.
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import Layout from '../components/Layout';
