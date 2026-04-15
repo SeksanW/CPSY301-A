@@ -1,3 +1,7 @@
+//database connection pool setup using mysql2/promise, 
+// allowing for efficient handling of multiple concurrent database connections in the ARIS LIMS API server.
+//  Connection details are loaded from environment variables for security and flexibility.
+
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 

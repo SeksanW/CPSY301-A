@@ -1,3 +1,5 @@
+// Main server file for ARIS LIMS API
+// Sets up Express server, middleware, and routes for authentication, COC management, sample handling, result entry, custom tests, and activity logging. Listens on specified port for incoming requests.
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
@@ -14,6 +16,7 @@ const app = express();
 app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176'] }));
 app.use(express.json());
 
+// Route setup
 app.use('/api/auth', authRoutes);
 app.use('/api/coc', cocRoutes);
 app.use('/api/samples', sampleRoutes);

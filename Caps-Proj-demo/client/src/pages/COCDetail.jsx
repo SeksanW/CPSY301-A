@@ -40,6 +40,7 @@ export default function COCDetail() {
     }).finally(() => setLoading(false));
   }, [id]);
 
+  //loads results for all test types for a sample
   const loadResults = async (sampleId) => {
     setSelectedSample(sampleId);
     setEditingResults(false);
@@ -58,6 +59,7 @@ export default function COCDetail() {
     setCustomTests(customRes.data || []);
   };
 
+  //edit result triggers a separate state to hold edits in progress, allowing cancel without losing original data
   const startEditing = () => {
     const copy = {};
     TEST_TYPES.forEach(t => { copy[t] = (results[t] || []).map(r => ({ ...r })); });
@@ -65,6 +67,7 @@ export default function COCDetail() {
     setEditingResults(true);
   };
 
+  //the values are held in a cell where any changes wont get saved to the server until the user clicks save, allowing them to edit multiple cells before saving. This function updates the editedResults state as they make changes
   const handleEditCell = (type, rowIdx, key, value) => {
     setEditedResults(prev => {
       const updated = prev[type].map((r, i) => i === rowIdx ? { ...r, [key]: value } : r);
@@ -82,6 +85,7 @@ export default function COCDetail() {
     setEditedResults(prev => ({ ...prev, [type]: [...(prev[type] || []), blank] }));
   };
 
+  //when save button is clicked the results are sent over to the server.
   const saveResults = async () => {
     try {
       for (const t of TEST_TYPES) {
@@ -261,6 +265,7 @@ export default function COCDetail() {
         )}
       </div>
 
+      //Button triggers for editing results, adding custom test types, and collapsing test groups for easier navigation of long result sets
       {selectedSample && (
         <div className="results-section card">
           <div className="card-header">

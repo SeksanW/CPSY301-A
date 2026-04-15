@@ -13,6 +13,7 @@ router.post('/login', async (req, res) => {
     return res.status(400).json({ message: 'Username and password are required.' });
   }
 
+  // Check if user exists and is active
   try {
     const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
     if (rows.length === 0) {
@@ -24,6 +25,7 @@ router.post('/login', async (req, res) => {
       return res.status(403).json({ message: 'Account is locked. Contact admin.' });
     }
 
+    // Verify password hash check
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid) {
       return res.status(401).json({ message: 'Invalid username or password.' });
@@ -31,6 +33,7 @@ router.post('/login', async (req, res) => {
 
     await pool.query('UPDATE users SET is_online = TRUE WHERE user_id = ?', [user.user_id]);
 
+    // Assign JWT token
     const token = jwt.sign(
       { user_id: user.user_id, username: user.username, role: user.role },
       process.env.JWT_SECRET,
